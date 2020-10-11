@@ -1,0 +1,60 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Socket.IO chat</title>
+    <style>
+      body { font: 13px Helvetica, Arial; }
+      button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
+    </style>
+  </head>
+  <body>
+    <h1>A: <span id="v1">0</span></h1>
+    <h1>B: <span id="v2">0</span></h1>
+    <h1>C: <span id="v3">0</span></h1>
+    <h1>D: <span id="v4">0</span></h1>
+    <button id="b1">A</button>
+    <button id="b2">B</button>
+    <button id="b3">C</button>
+    <button id="b4">D</button>
+    <button id="refresh">Refresh</button>
+    <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script>
+      $(function () {
+        var socket = io();
+        $('#b1').click(function(){
+          socket.emit('vote', {option: 1});
+        });
+        $('#b2').click(function(){
+          socket.emit('vote', {option: 2});
+        });
+        $('#b3').click(function(){
+          socket.emit('vote', {option: 3});
+        });
+        $('#b4').click(function(){
+          socket.emit('vote', {option: 4});
+        });
+        $('#refresh').click(function(){
+          socket.emit('refresh');
+        });
+        socket.on('vote', function(msg){
+          $('#v' + msg.option).text(msg['v' + msg.option]);
+        });
+        socket.on('refresh', function(){
+          let i = 1;
+          while (i <= 4){
+            $('#v'+i).text(0);
+            i += 1;
+          }
+        });
+        socket.on('init', function(msg){
+          let i = 1;
+          while (i <= 4){
+            $('#v'+i).text(msg['v'+i]);
+            i += 1;
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
